@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: mysql:8.0
@@ -13,7 +15,9 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d
-    
+    networks:
+      - app-net
+
   web:
     image: henrt/web-app:latest
     container_name: web
@@ -23,10 +27,9 @@ services:
     ports:
       - "4000:4000"
     networks:
-      app-net
+      - app-net
 
   report:
-
     image: henrt/report-app:latest
     container_name: report
     restart: always
@@ -35,10 +38,11 @@ services:
     ports:
       - "4040:4040"
     networks:
-      app-net
+      - app-net
 
 volumes:
-  db_data: 
+  db_data:
 
 networks:
-  app-net
+  app-net:
+    driver: bridge  # Você pode explicitamente definir o driver da rede se necessário
